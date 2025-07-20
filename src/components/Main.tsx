@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Loader } from "./ui";
+import { Loader, RepoTable } from "./ui";
 import { useAppSelector } from "../hooks";
 
 import styles from "../styles/Main/main.module.css";
@@ -29,5 +29,5 @@ export const Main: FC = () => {
     return <p className={styles.centredMessage}>Ничего не найдено</p>;
   }
 
-  return <div className={styles.container}></div>;
+  return <RepoTable />;
 };

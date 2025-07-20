@@ -1,11 +1,28 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setIsError, setIsFetching, setData } from "../store";
+import { setIsError, setIsFetching, setData, setQuery } from "../store";
 
 export type SearchRepositoriesRes = {
   total_count: number;
+  items: {
+    topics: string[];
+    full_name: string;
+    license?: { name: string };
+    description?: string;
+    name: string;
+    language?: string;
+    stargazers_count: number;
+    forks_count: number;
+    updated_at: string;
+  }[];
 };
 
-type SearchRepositoriesReq = { q: string };
+type SearchRepositoriesReq = {
+  q: string;
+  page?: number;
+  per_page?: number;
+  order?: string;
+  sort?: string;
+};
 
 export const gitHubApi = createApi({
   reducerPath: "gitHubApi",
@@ -32,8 +49,9 @@ export const gitHubApi = createApi({
         params,
       }),
 
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+      async onQueryStarted(params, { dispatch, queryFulfilled }) {
         try {
+          dispatch(setQuery(params.q));
           dispatch(setIsFetching(true));
 
           const { data } = await queryFulfilled;

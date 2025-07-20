@@ -17,4 +17,13 @@ export type AppStore = typeof store;
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = AppStore["dispatch"];
 
-export { setIsError, setIsFetching, setData } from "./searchSlice";
+export {
+  setIsError,
+  setIsFetching,
+  setData,
+  setQuery,
+  setOrder,
+  setPage,
+  setPerPage,
+  setSort,
+} from "./searchSlice";

@@ -1,14 +1,72 @@
 @import "../constants.scss";
 
-.container {
-  display: flex;
-  height: calc(100% - 5rem);
-}
-
 .centredMessage {
   margin-inline: 1rem;
   color: $gray-color;
   font-size: $font-size-larger;
   text-align: center;
   margin-top: calc(50dvh - 5rem);
+}
+
+.container {
+  display: flex;
+  min-height: calc(100dvh - 5rem);
+  overflow-wrap: anywhere;
+
+  .table_container {
+    flex: 2.5;
+    margin: 1rem;
+
+    & > h1 {
+      font-size: 2rem;
+    }
+
+    tbody > tr {
+      transition: background-color 0.15s ease;
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: $very-light-blue-color;
+        }
+      }
+    }
+
+    & > :last-child {
+      margin-top: auto;
+
+      & > div {
+        margin-top: 1rem;
+        padding: 0;
+
+        @media (max-width: 768px) {
+          button {
+            padding: 0.25rem;
+          }
+
+          & > :nth-child(3) {
+            margin-left: 0.5rem;
+            margin-right: 1rem;
+          }
+
+          & > :last-child {
+            margin-left: 0.25rem;
+          }
+        }
+      }
+    }
+
+    @media (max-width: 768px) {
+      margin-inline: 0;
+
+      td,
+      th {
+        padding: 0.5rem;
+      }
+    }
+  }
+
+  .info_container {
+    flex: 1;
+    background-color: $light-gray-color;
+  }
 }
