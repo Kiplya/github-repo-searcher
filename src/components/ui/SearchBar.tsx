@@ -6,6 +6,7 @@ import styles from "../../styles/Header/header.module.css";
 interface Props {
   placeholder: string;
   value: string;
+  disabled?: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onClick: (e: MouseEvent<HTMLButtonElement>) => void;
 }
@@ -13,6 +14,7 @@ interface Props {
 export const SearchBar: FC<Props> = ({
   placeholder,
   value,
+  disabled = false,
   onChange,
   onClick,
 }) => {
@@ -25,7 +27,11 @@ export const SearchBar: FC<Props> = ({
         onChange={onChange}
       />
 
-      <Button variant="contained" onClick={onClick}>
+      <Button
+        disabled={disabled || !value}
+        variant="contained"
+        onClick={onClick}
+      >
         искать
       </Button>
     </div>

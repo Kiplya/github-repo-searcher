@@ -1,4 +1,14 @@
+@import "../constants.scss";
+
 .container {
   display: flex;
   height: calc(100% - 5rem);
+}
+
+.centredMessage {
+  margin-inline: 1rem;
+  color: $gray-color;
+  font-size: $font-size-larger;
+  text-align: center;
+  margin-top: calc(50dvh - 5rem);
 }
