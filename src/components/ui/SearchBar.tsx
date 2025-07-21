@@ -1,7 +1,8 @@
 import { FC, ChangeEvent, MouseEvent } from "react";
 import { InputBase, Button } from "@mui/material";
 interface Props {
-  styles: { [key: string]: string };
+  containerStyle?: string;
+  inputFieldStyle?: string;
   placeholder: string;
   value: string;
   disabled?: boolean;
@@ -9,8 +10,23 @@ interface Props {
   onClick: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
+/**
+ * `SearchBar` — универсальный компонент поисковой строки с кнопкой.
+ *
+ * Принимает стили контейнера и поля ввода через пропсы для гибкой кастомизации.
+ *
+ * Пропсы:
+ * @param containerStyle - необязательное имя CSS класса для обёртки компонента
+ * @param inputFieldStyle - необязательное имя CSS класса для поля ввода
+ * @param placeholder - плейсхолдер для поля ввода
+ * @param value - текущее значение поля ввода
+ * @param disabled - флаг, отключающий кнопку поиска (по умолчанию false)
+ * @param onChange - обработчик изменения текста в поле ввода
+ * @param onClick - обработчик нажатия на кнопку поиска
+ */
 export const SearchBar: FC<Props> = ({
-  styles,
+  containerStyle,
+  inputFieldStyle,
   placeholder,
   value,
   disabled = false,
@@ -18,9 +34,9 @@ export const SearchBar: FC<Props> = ({
   onClick,
 }) => {
   return (
-    <div className={styles.searchBar_container}>
+    <div className={containerStyle}>
       <InputBase
-        className={styles.searchBar_inputField}
+        className={inputFieldStyle}
         placeholder={placeholder}
         value={value}
         onChange={onChange}

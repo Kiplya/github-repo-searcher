@@ -2,6 +2,7 @@
   "name": "github-repo-searcher",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://kiplya.github.io/github-repo-searcher",
   "scripts": {
     "predeploy": "npm run build",
     "start": "react-scripts start",

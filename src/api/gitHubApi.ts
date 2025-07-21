@@ -1,6 +1,22 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setIsError, setIsFetching, setData, setQuery } from "../store";
 
+/**
+ * SearchRepositoriesRes — тип, описывающий структуру ответа от GitHub API
+ * при выполнении запроса к `search/repositories`.
+ *
+ * @property `total_count: number` — общее количество найденных репозиториев.
+ * @property `items[]` — массив репозиториев. Каждый элемент содержит:
+ *   - `topics: string[]` — список тем репозитория.
+ *   - `full_name: string` — полное имя репозитория в формате "owner/repo".
+ *   - `license?: { name: string }` — объект лицензии, если указана.
+ *   - `description?: string` — описание репозитория, если указано.
+ *   - `name: string` — название репозитория.
+ *   - `language?: string` — основной язык проекта, если определен.
+ *   - `stargazers_count: number` — количество звёзд.
+ *   - `forks_count: number` — количество форков.
+ *   - `updated_at: string` — дата последнего обновления в формате ISO.
+ */
 export type SearchRepositoriesRes = {
   total_count: number;
   items: {
@@ -24,6 +40,28 @@ type SearchRepositoriesReq = {
   sort?: string;
 };
 
+/**
+ * gitHubApi — API-слайс, созданный с помощью RTK Query для взаимодействия с GitHub REST API.
+ *
+ * Эндпоинт:
+ * - `searchRepositories` — поиск репозиториев по ключевому слову с возможностью сортировки, пагинации и указания порядка.
+ *
+ * Особенности:
+ * - Добавляет заголовок авторизации с токеном GitHub (`REACT_APP_GITHUB_TOKEN`) из переменных окружения.
+ * - Автоматически обрабатывает состояния загрузки, ошибки и сохраняет полученные данные в Redux.
+ * - Диспетчит Redux-экшены:
+ *   - `setQuery` — сохраняет поисковый запрос.
+ *   - `setIsFetching` — флаг загрузки.
+ *   - `setData` — сохраняет результат поиска.
+ *   - `setIsError` — устанавливает флаг ошибки при сбое.
+ *
+ * Типы:
+ * - `SearchRepositoriesReq` — параметры запроса (`q`, `page`, `per_page`, `order`, `sort`)
+ * - `SearchRepositoriesRes` — ответ GitHub API
+ *
+ * Экспортируемые хуки:
+ * @function useLazySearchRepositoriesQuery — RTK Query хук для ленивого вызова поиска.
+ */
 export const gitHubApi = createApi({
   reducerPath: "gitHubApi",
   baseQuery: fetchBaseQuery({
@@ -66,4 +104,13 @@ export const gitHubApi = createApi({
   }),
 });
 
-export const { useLazySearchRepositoriesQuery } = gitHubApi;
+/**
+ * Хук RTK Query для ленивого запроса репозиториев по заданным условиям.
+ *
+ * Вызывает GET-запрос к endpoint `search/repositories` на GitHub.
+ *
+ * @params `SearchRepositoriesReq` — параметры запроса (`q`, `page`, `per_page`, `order`, `sort`)
+ * @returns `SearchRepositoriesRes` — ответ GitHub API
+ */
+export const useLazySearchRepositoriesQuery =
+  gitHubApi.useLazySearchRepositoriesQuery;

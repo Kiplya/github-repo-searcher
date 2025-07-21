@@ -2,11 +2,16 @@ import { FC } from "react";
 import { CircularProgress } from "@mui/material";
 
 interface Props {
-  styles: { [key: string]: string };
+  styles?: string;
 }
 
+/**
+ * Компонент отображения индикатора загрузки.
+ *
+ * @param styles - необязательное имя CSS-класса для контейнера.
+ */
 export const Loader: FC<Props> = ({ styles }) => (
-  <div className={styles.loader_container}>
+  <div className={styles}>
     <CircularProgress />
   </div>
 );

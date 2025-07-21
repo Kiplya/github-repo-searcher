@@ -6,6 +6,15 @@ import { SearchBar } from "./ui";
 import styles from "../styles/Header/header.module.css";
 import { setPage } from "../store";
 
+/**
+ * Header — функциональный компонент, отвечающий за отображение поисковой строки
+ * и запуск поиска репозиториев через API.
+ *
+ * Использует локальное состояние для хранения текста запроса,
+ * а также данные из Redux (параметры поиска и управление страницей).
+ *
+ * При клике на кнопку поиска вызывает запрос к API с текущими параметрами.
+ */
 export const Header: FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [trigger, { isFetching }] = useLazySearchRepositoriesQuery();
@@ -18,7 +27,8 @@ export const Header: FC = () => {
   return (
     <div className={styles.container}>
       <SearchBar
-        styles={styles}
+        containerStyle={styles.searchBar_container}
+        inputFieldStyle={styles.searchBar_inputField}
         onClick={() => {
           dispatch(setPage(1));
           trigger({

@@ -31,10 +31,46 @@ const formateDate = (dateString: string) => {
 };
 
 interface Props {
-  styles: { [key: string]: string };
+  infoVisibleStyle?: string;
+  tableHiddenStyle?: string;
+  containerStyle?: string;
+  tableContainerStyle?: string;
+  infoContainerStyle?: string;
+  centredTextStyle?: string;
+  backButtonStyle?: string;
+  languageContainerStyle?: string;
 }
 
-export const RepoTable: FC<Props> = ({ styles }) => {
+/**
+ * `RepsTable` — компонент для отображения результатов поиска репозиториев GitHub в виде таблицы.
+ *
+ * Функционал:
+ * - Отображение списка репозиториев с пагинацией и сортировкой по столбцам.
+ * - Возможность клика по строке для просмотра подробной информации о выбранном репозитории.
+ * - Переключение между таблицей и подробной карточкой выбранного репозитория.
+ *
+ * Использует данные из Redux-состояния (`searchReducer`) и RTK Query для повторного запроса при изменении параметров.
+ *
+ * Пропсы для передачи CSS-классов:
+ * @param containerStyle необязательное имя CSS класса для контейнера компонента
+ * @param tableContainerStyle необязательное имя CSS класса для блока с таблицей
+ * @param infoContainerStyle необязательное имя CSS класса для блока с карточкой репозитория
+ * @param tableHiddenStyle необязательное имя CSS класса, скрывающее таблицу
+ * @param infoVisibleStyle необязательное имя CSS класса, показывающее блок с информацией
+ * @param centredTextStyle необязательное имя CSS класса для центрированного текста
+ * @param backButtonStyle необязательное имя CSS класса для кнопки "назад"
+ * @param languageContainerStyle необязательное имя CSS класса для обёртки блока с языком и количеством звёзд
+ */
+export const RepsTable: FC<Props> = ({
+  centredTextStyle,
+  backButtonStyle,
+  infoVisibleStyle,
+  tableHiddenStyle,
+  containerStyle,
+  tableContainerStyle,
+  infoContainerStyle,
+  languageContainerStyle,
+}) => {
   const data = useAppSelector((state) => state.searchReducer.data);
   const [trigger] = useLazySearchRepositoriesQuery();
   const dispatch = useAppDispatch();
@@ -70,14 +106,14 @@ export const RepoTable: FC<Props> = ({ styles }) => {
 
   const toggleVisibility = useCallback(() => {
     if (infoRef.current && tableRef.current) {
-      infoRef.current.classList.toggle(styles.visible);
-      tableRef.current.classList.toggle(styles.hidden);
+      infoRef.current.classList.toggle(infoVisibleStyle || "");
+      tableRef.current.classList.toggle(tableHiddenStyle || "");
     }
   }, []);
 
   return (
-    <div className={styles.container}>
-      <div ref={tableRef} className={styles.table_container}>
+    <div className={containerStyle}>
+      <div ref={tableRef} className={tableContainerStyle}>
         <Typography variant="h4">Результаты поиска</Typography>
 
         <Table>
@@ -185,10 +221,10 @@ export const RepoTable: FC<Props> = ({ styles }) => {
         />
       </div>
 
-      <Card ref={infoRef} className={styles.info_container}>
+      <Card ref={infoRef} className={infoContainerStyle}>
         <CardContent>
           {!selectedRep && (
-            <Typography className={styles.centredMessage}>
+            <Typography className={centredTextStyle}>
               Выберите репозиторий
             </Typography>
           )}
@@ -200,7 +236,7 @@ export const RepoTable: FC<Props> = ({ styles }) => {
                   toggleVisibility();
                   setSelectedRep(null);
                 }}
-                className={styles.backButton}
+                className={backButtonStyle}
               >
                 &#10006;
               </Typography>
@@ -215,7 +251,7 @@ export const RepoTable: FC<Props> = ({ styles }) => {
                 <Typography variant="h4">{selectedRep.name}</Typography>
               </Link>
 
-              <Box className={styles.language_container}>
+              <Box className={languageContainerStyle}>
                 <Chip
                   label={selectedRep.language || "Мультиязычный"}
                   color="primary"
