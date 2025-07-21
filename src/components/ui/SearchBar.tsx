@@ -1,9 +1,7 @@
 import { FC, ChangeEvent, MouseEvent } from "react";
 import { InputBase, Button } from "@mui/material";
-
-import styles from "../../styles/Header/header.module.css";
-
 interface Props {
+  styles: { [key: string]: string };
   placeholder: string;
   value: string;
   disabled?: boolean;
@@ -12,6 +10,7 @@ interface Props {
 }
 
 export const SearchBar: FC<Props> = ({
+  styles,
   placeholder,
   value,
   disabled = false,

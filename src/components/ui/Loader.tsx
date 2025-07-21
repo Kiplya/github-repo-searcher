@@ -1,10 +1,12 @@
 import { FC } from "react";
 import { CircularProgress } from "@mui/material";
 
-import styles from "../../styles/Loader/loader.module.css";
+interface Props {
+  styles: { [key: string]: string };
+}
 
-export const Loader: FC = () => (
-  <div className={styles.container}>
+export const Loader: FC<Props> = ({ styles }) => (
+  <div className={styles.loader_container}>
     <CircularProgress />
   </div>
 );

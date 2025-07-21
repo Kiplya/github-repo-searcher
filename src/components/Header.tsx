@@ -18,6 +18,7 @@ export const Header: FC = () => {
   return (
     <div className={styles.container}>
       <SearchBar
+        styles={styles}
         onClick={() => {
           dispatch(setPage(1));
           trigger({

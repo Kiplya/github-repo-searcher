@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Loader, RepoTable } from "./ui";
 import { useAppSelector } from "../hooks";
+import { Typography } from "@mui/material";
 
 import styles from "../styles/Main/main.module.css";
 
@@ -10,24 +11,32 @@ export const Main: FC = () => {
   const isFetching = useAppSelector((state) => state.searchReducer.isFetching);
 
   if (isFetching) {
-    return <Loader />;
+    return <Loader styles={styles} />;
   }
 
   if (isError) {
     return (
-      <p className={styles.centredMessage}>
+      <Typography className={styles.centredMessage} variant="h2">
         Произошла ошибка. Введите другой запрос или повторите этот чуть позже
-      </p>
+      </Typography>
     );
   }
 
   if (!data) {
-    return <p className={styles.centredMessage}>Добро пожаловать</p>;
+    return (
+      <Typography className={styles.centredMessage} variant="h2">
+        Добро пожаловать
+      </Typography>
+    );
   }
 
   if (data.total_count === 0) {
-    return <p className={styles.centredMessage}>Ничего не найдено</p>;
+    return (
+      <Typography className={styles.centredMessage} variant="h2">
+        Ничего не найдено
+      </Typography>
+    );
   }
 
-  return <RepoTable />;
+  return <RepoTable styles={styles}/>;
 };

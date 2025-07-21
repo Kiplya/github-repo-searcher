@@ -1,4 +1,4 @@
-import { FC, useCallback } from "react";
+import { FC, useCallback, useState, useRef } from "react";
 import {
   Table,
   TableBody,
@@ -7,12 +7,18 @@ import {
   TableRow,
   TablePagination,
   TableSortLabel,
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  Chip,
+  Link,
 } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
+
 import { useLazySearchRepositoriesQuery } from "../../api";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { setOrder, setPage, setPerPage, setSort } from "../../store";
-
-import styles from "../../styles/Main/main.module.css";
 
 const formateDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -24,7 +30,11 @@ const formateDate = (dateString: string) => {
   }).format(date);
 };
 
-export const RepoTable: FC = () => {
+interface Props {
+  styles: { [key: string]: string };
+}
+
+export const RepoTable: FC<Props> = ({ styles }) => {
   const data = useAppSelector((state) => state.searchReducer.data);
   const [trigger] = useLazySearchRepositoriesQuery();
   const dispatch = useAppDispatch();
@@ -34,6 +44,12 @@ export const RepoTable: FC = () => {
   const rowsPerPage = useAppSelector((state) => state.searchReducer.perPage);
   const sortBy = useAppSelector((state) => state.searchReducer.sort);
   const orderBy = useAppSelector((state) => state.searchReducer.order);
+
+  const [selectedRep, setSelectedRep] = useState<
+    NonNullable<typeof data>["items"][number] | null
+  >(null);
+  const infoRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
 
   const handleSortBy = useCallback(
     (newSortBy: string) => {
@@ -52,10 +68,17 @@ export const RepoTable: FC = () => {
     [orderBy, sortBy, dispatch, trigger]
   );
 
+  const toggleVisibility = useCallback(() => {
+    if (infoRef.current && tableRef.current) {
+      infoRef.current.classList.toggle(styles.visible);
+      tableRef.current.classList.toggle(styles.hidden);
+    }
+  }, []);
+
   return (
     <div className={styles.container}>
-      <div className={styles.table_container}>
-        <h1>Результаты поиска</h1>
+      <div ref={tableRef} className={styles.table_container}>
+        <Typography variant="h4">Результаты поиска</Typography>
 
         <Table>
           <TableHead>
@@ -113,8 +136,15 @@ export const RepoTable: FC = () => {
           </TableHead>
 
           <TableBody>
-            {data?.items.map((rep, index) => (
-              <TableRow key={index}>
+            {data?.items.map((rep) => (
+              <TableRow
+                onClick={() => {
+                  toggleVisibility();
+                  setSelectedRep(rep);
+                }}
+                selected={selectedRep?.full_name === rep.full_name}
+                key={rep.full_name}
+              >
                 <TableCell>{rep.name}</TableCell>
                 <TableCell>{rep.language || "Мультиязычный"}</TableCell>
                 <TableCell>{rep.forks_count}</TableCell>
@@ -155,7 +185,72 @@ export const RepoTable: FC = () => {
         />
       </div>
 
-      <div className={styles.info_container}></div>
+      <Card ref={infoRef} className={styles.info_container}>
+        <CardContent>
+          {!selectedRep && (
+            <Typography className={styles.centredMessage}>
+              Выберите репозиторий
+            </Typography>
+          )}
+
+          {selectedRep && (
+            <>
+              <Typography
+                onClick={() => {
+                  toggleVisibility();
+                  setSelectedRep(null);
+                }}
+                className={styles.backButton}
+              >
+                &#10006;
+              </Typography>
+
+              <Link
+                href={`https://github.com/${selectedRep.full_name}`}
+                underline="hover"
+                target="_blank"
+                rel="noopener"
+                color="black"
+              >
+                <Typography variant="h4">{selectedRep.name}</Typography>
+              </Link>
+
+              <Box className={styles.language_container}>
+                <Chip
+                  label={selectedRep.language || "Мультиязычный"}
+                  color="primary"
+                />
+
+                <Box>
+                  <StarIcon />
+                  <Typography>{selectedRep.stargazers_count}</Typography>
+                </Box>
+              </Box>
+
+              {selectedRep.topics.length > 0 && (
+                <Box
+                  display="flex"
+                  flexWrap="wrap"
+                  gap="1rem"
+                  marginBottom="1rem"
+                >
+                  {selectedRep.topics.map((topic) => (
+                    <Chip label={topic} />
+                  ))}
+                </Box>
+              )}
+
+              <Typography>
+                {selectedRep.license?.name || "Нет лицензии"}
+              </Typography>
+
+              <Typography>
+                {selectedRep.description || "Нет описания"}
+              </Typography>
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
